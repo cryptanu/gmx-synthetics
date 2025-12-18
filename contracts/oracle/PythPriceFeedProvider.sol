@@ -83,7 +83,7 @@ contract PythPriceFeedProvider is IOracleProvider {
         if (priceFeedIds[token] == bytes32(0)) {
             revert Pyth__EmptyPriceFeed(token);
         }
-        PythStructs.Price memory pythPrice = pyth.getPriceUnsafe(priceFeedIds[token]);
+        PythStructs.Price memory pythPrice = pyth.getPriceUnsafe(priceFeedIds[token]); // @audit does not check publishTime
 
         uint256 scaledPriceUint = _convertPythPrice(pythPrice.price, pythPrice.expo);
         uint256 scaledConfUint = _convertPythValue(pythPrice.conf, pythPrice.expo);
@@ -102,7 +102,7 @@ contract PythPriceFeedProvider is IOracleProvider {
     /// @dev Only callable by the owner. Emits Pyth_PriceFeedIdSet event.
     /// @param token The token address to configure
     /// @param priceFeedId The Pyth price feed ID for the token
-    function setPriceFeedId(address token, bytes32 priceFeedId) external onlyOwner {
+    function setPriceFeedId(address token, bytes32 priceFeedId) external onlyOwner { // ok
         priceFeedIds[token] = priceFeedId;
         emit Pyth_PriceFeedIdSet(token, priceFeedId);
     }
@@ -110,19 +110,18 @@ contract PythPriceFeedProvider is IOracleProvider {
     /// @notice Transfers ownership of the contract to a new address
     /// @dev Only callable by the current owner. Emits Pyth_OwnerSet event.
     /// @param newOwner The address to transfer ownership to
-    function setOwner(address newOwner) external onlyOwner {
+    function setOwner(address newOwner) external onlyOwner { // @audit no check for zero address || can be made two-step ownable
         owner = newOwner;
         emit Pyth_OwnerSet(newOwner);
     }
 
     /// @notice Converts a Pyth price value to the target decimals
-    /// @dev Validates that price is non-negative and exponent is in valid range [-18, 18]
-    /// @param _price The Pyth price value (int64)
+s    /// @param _price The Pyth price value (int64)
     /// @param _expo The Pyth price exponent (int32)
     /// @return The converted price value scaled to the target decimals
     function _convertPythPrice(int64 _price, int32 _expo) internal view returns (uint256) {
-        if (_price < 0 || _expo < -18 || _expo > 18) {
-            revert Pyth__InvalidPrice(_price, _expo);
+        if (_price < 0 || _expo < -18 || _expo > 18) { // ok
+            revert Pyth__InvalidPrice(_price, _expo); // @audit-info there are two reasons to revert: price is negative or exponent is out of valid range (scale)
         }
         return _convertPythValue(uint64(_price), _expo);
     }
@@ -135,12 +134,12 @@ contract PythPriceFeedProvider is IOracleProvider {
     /// @return The converted value scaled to the target decimals
     function _convertPythValue(uint64 _value, int32 _expo) internal view returns (uint256) {
         uint256 dominator = 10 ** (decimals);
-        if (_expo < -18 || _expo > 18) {
+        if (_expo < -18 || _expo > 18) { // repetition, check exists in _convertPythPrice already
             revert Pyth__InvalidScale(_expo);
         }
         uint256 value = uint256(_value);
         if (_expo >= 0) {
-            return value * (10 ** uint32(_expo)) * (10 ** (decimals - uint32(_expo)));
+            return value * (10 ** uint32(_expo)) * (10 ** (decimals - uint32(_expo))); // @audit will panic if there's no check for decimals > expo
         } else {
             uint256 absExpo = uint256(uint32(-_expo));
             uint256 scaled = value * dominator; // scale to decimals first
