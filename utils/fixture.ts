@@ -31,7 +31,6 @@ export async function deployFixture() {
     signer8,
     signer9,
   ] = accountList;
-
   const wnt = await hre.ethers.getContract("WETH");
   await wnt.deposit({ value: expandDecimals(50, 18) });
 
@@ -172,7 +171,6 @@ export async function deployFixture() {
     dataStore.address
   );
   const solUsdMarket = await reader.getMarket(dataStore.address, solUsdMarketAddress);
-
   return {
     accountList,
     getContract: async (contractName) => {

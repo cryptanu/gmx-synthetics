@@ -71,7 +71,9 @@ const func = async ({ deployments, gmx }: HardhatRuntimeEnvironment) => {
 };
 
 func.skip = async ({ network }: HardhatRuntimeEnvironment) => {
-  return network.name !== "avalancheFuji";
+  // @review skip all
+  return true;
+  // return network.name !== "avalancheFuji";
 };
 func.id = "fixVirtualInventoryForSwaps";
 func.tags = ["FixVirtualInventoryForSwaps"];

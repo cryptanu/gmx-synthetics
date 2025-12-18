@@ -57,8 +57,10 @@ export default async function ({ network }: HardhatRuntimeEnvironment) {
   }
 
   const generalConfig = {
-    feeReceiver: "0x43ce1d475e06c65dd879f4ec644b8e0e10ff2b6d",
-    holdingAddress: "0x3f59203ea1c66527422998b54287e1efcacbe2c5",
+    // @todo change addresses
+    feeReceiver: "0xa3a8a39139ad151641833f1209b1e43a1c3b219d",
+    holdingAddress: "0xa3a8a39139ad151641833f1209b1e43a1c3b219d",
+
     sequencerUptimeFeed: ethers.constants.AddressZero,
     sequencerGraceDuration: 300,
     maxUiFeeFactor: percentageToFloat("0.05%"),
@@ -106,12 +108,14 @@ export default async function ({ network }: HardhatRuntimeEnvironment) {
   };
 
   const networkConfig = {
-    arbitrumGoerli: {},
-    arbitrumSepolia: {
+    arbitrumGoerli: {
       maxAutoCancelOrders: 10,
       maxTotalCallbackGasLimitForAutoCancelOrders: 10_000_000,
+      maxCallbackGasLimit: 3_000_000,
+      estimatedGasFeeBaseAmount: false,
+      executionGasFeeBaseAmount: false,
+      sequencerUptimeFeed: "0xFdB631F5EE196F0ed6FAa767959853A9F217697D",
     },
-    avalancheFuji: {},
     arbitrum: {
       maxAutoCancelOrders: 10,
       maxTotalCallbackGasLimitForAutoCancelOrders: 10_000_000,
@@ -120,7 +124,16 @@ export default async function ({ network }: HardhatRuntimeEnvironment) {
       executionGasFeeBaseAmount: false,
       sequencerUptimeFeed: "0xFdB631F5EE196F0ed6FAa767959853A9F217697D",
     },
-    avalanche: {},
+    monad: {
+      maxAutoCancelOrders: 10,
+      maxTotalCallbackGasLimitForAutoCancelOrders: 10_000_000,
+      maxCallbackGasLimit: 3_000_000,
+      estimatedGasFeeBaseAmount: false,
+      executionGasFeeBaseAmount: false,
+      //@todo config chainlink interface v2/v3 sequencer only for layer 2
+      //disable wont use
+      // sequencerUptimeFeed: "0xFdB631F5EE196F0ed6FAa767959853A9F217697D",
+    },
   }[network.name];
 
   if (!networkConfig) {

@@ -11,6 +11,12 @@ const expectedRealtimeFeedIds = {
     "USDC.e": "0x95241f154d34539741b19ce4bae815473fd1b2a90ac3b4b023a692f31edfe90e",
     USDT: "0x297cc1e1ee5fc2f45dff1dd11a46694567904f4dbc596c7cc216d6c688605a1b",
   },
+  //@todo
+   monad: {
+    USDC: "0x95241f154d34539741b19ce4bae815473fd1b2a90ac3b4b023a692f31edfe90e",
+    "USDC.e": "0x95241f154d34539741b19ce4bae815473fd1b2a90ac3b4b023a692f31edfe90e",
+    USDT: "0x297cc1e1ee5fc2f45dff1dd11a46694567904f4dbc596c7cc216d6c688605a1b",
+  },
 };
 
 async function validateRealtimeFeedConfig({

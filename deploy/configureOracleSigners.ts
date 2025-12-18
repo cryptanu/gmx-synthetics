@@ -7,6 +7,10 @@ const func = async ({ deployments, getNamedAccounts, gmx }: HardhatRuntimeEnviro
   const { read, execute, log } = deployments;
   const { deployer } = await getNamedAccounts();
   const oracleConfig = await gmx.getOracle();
+  if (!oracleConfig) {
+    log("oracle config not found, skipping oracle signers configuration");
+    return;
+  }
   const oracleSigners = oracleConfig.signers.map((s) => ethers.utils.getAddress(s));
 
   const existingSignersCount = await read("OracleStore", "getSignerCount");

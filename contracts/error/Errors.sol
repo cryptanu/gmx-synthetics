@@ -104,6 +104,7 @@ library Errors {
     // OrderHandler errors
     error OrderNotUpdatable(uint256 orderType);
     error InvalidKeeperForFrozenOrder(address keeper);
+    error UnsupportedAtomicOrderType(uint256 orderType);
 
     // FeatureUtils errors
     error DisabledFeature(bytes32 key);
@@ -347,6 +348,9 @@ library Errors {
         uint256 index,
         string label
     );
+
+    // DepositHandler errors
+    error SwapsNotAllowedForAtomicDeposit(uint256 longTokenSwapPathLength, uint256 shortTokenSwapPathLength);
 
     // WithdrawalHandler errors
     error SwapsNotAllowedForAtomicWithdrawal(uint256 longTokenSwapPathLength, uint256 shortTokenSwapPathLength);

@@ -5,6 +5,10 @@ const func = async ({ getNamedAccounts, deployments, gmx }: HardhatRuntimeEnviro
   const { deployer } = await getNamedAccounts();
   const oracleConfig = await gmx.getOracle();
 
+  if (!oracleConfig) {
+    return;
+  }
+
   for (const [tokenSymbol, { priceFeed }] of Object.entries(oracleConfig.tokens)) {
     if (!priceFeed || !priceFeed.deploy) {
       continue;

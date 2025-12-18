@@ -46,7 +46,8 @@ contract OrderHandler is IOrderHandler, BaseOrderHandler {
             orderVault,
             referralStorage,
             account,
-            params
+            params,
+            false // isAtomicOrder
         );
     }
 
@@ -181,7 +182,56 @@ contract OrderHandler is IOrderHandler, BaseOrderHandler {
         this._executeOrder(
             key,
             order,
-            msg.sender
+            msg.sender,
+            false // isAtomicOrder
+        );
+    }
+
+    // @notice this function can only be called for markets where Chainlink
+    // on-chain feeds are configured for all the tokens of the market
+    // @dev only supports MarketIncrease and MarketDecrease order types
+    // @param account the order account
+    // @param params IBaseOrderUtils.CreateOrderParams
+    // @param oracleParams OracleUtils.SetPricesParams
+    function executeAtomicOrder(
+        address account,
+        IBaseOrderUtils.CreateOrderParams calldata params,
+        OracleUtils.SetPricesParams calldata oracleParams
+    )
+        external
+        globalNonReentrant
+        onlyController
+        withOraclePricesForAtomicAction(oracleParams)
+    {
+        // only support MarketIncrease and MarketDecrease for atomic execution
+        if (
+            params.orderType != Order.OrderType.MarketIncrease &&
+            params.orderType != Order.OrderType.MarketDecrease
+        ) {
+            revert Errors.UnsupportedAtomicOrderType(uint256(params.orderType));
+        }
+
+        FeatureUtils.validateFeature(dataStore, Keys.executeAtomicOrderFeatureDisabledKey(address(this), uint256(params.orderType)));
+
+        oracle.validateSequencerUp();
+
+        bytes32 key = OrderUtils.createOrder(
+            dataStore,
+            eventEmitter,
+            orderVault,
+            referralStorage,
+            account,
+            params,
+            true // isAtomicOrder
+        );
+
+        Order.Props memory order = OrderStoreUtils.get(dataStore, key);
+
+        this._executeOrder(
+            key,
+            order,
+            account,
+            true // isAtomicOrder
         );
     }
 
@@ -207,7 +257,8 @@ contract OrderHandler is IOrderHandler, BaseOrderHandler {
         try this._executeOrder{ gas: executionGas }(
             key,
             order,
-            msg.sender
+            msg.sender,
+            false // isAtomicOrder
         ) {
         } catch (bytes memory reasonBytes) {
             _handleOrderError(key, startingGas, reasonBytes);
@@ -216,13 +267,14 @@ contract OrderHandler is IOrderHandler, BaseOrderHandler {
 
     // @dev executes an order
     // @param key the key of the order to execute
-    // @param oracleParams OracleUtils.SetPricesParams
+    // @param order the order to execute
     // @param keeper the keeper executing the order
-    // @param startingGas the starting gas
+    // @param isAtomicOrder whether this is an atomic order execution
     function _executeOrder(
         bytes32 key,
         Order.Props memory order,
-        address keeper
+        address keeper,
+        bool isAtomicOrder
     ) external onlySelf {
         uint256 startingGas = gasleft();
 
@@ -233,12 +285,16 @@ contract OrderHandler is IOrderHandler, BaseOrderHandler {
             startingGas,
             Order.SecondaryOrderType.None
         );
-        // limit swaps require frozen order keeper for execution since on creation it can fail due to output amount
-        // which would automatically cause the order to be frozen
-        // limit increase and limit / trigger decrease orders may fail due to output amount as well and become frozen
-        // but only if their acceptablePrice is reached
-        if (params.order.isFrozen() || params.order.orderType() == Order.OrderType.LimitSwap) {
-            _validateFrozenOrderKeeper(keeper);
+
+        // skip frozen order validation for atomic orders since they only support MarketIncrease/MarketDecrease
+        if (!isAtomicOrder) {
+            // limit swaps require frozen order keeper for execution since on creation it can fail due to output amount
+            // which would automatically cause the order to be frozen
+            // limit increase and limit / trigger decrease orders may fail due to output amount as well and become frozen
+            // but only if their acceptablePrice is reached
+            if (params.order.isFrozen() || params.order.orderType() == Order.OrderType.LimitSwap) {
+                _validateFrozenOrderKeeper(keeper);
+            }
         }
 
         FeatureUtils.validateFeature(params.contracts.dataStore, Keys.executeOrderFeatureDisabledKey(address(this), uint256(params.order.orderType())));

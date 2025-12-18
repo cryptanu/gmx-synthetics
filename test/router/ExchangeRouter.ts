@@ -288,6 +288,7 @@ describe("ExchangeRouter", () => {
               minTimestamp: currentTimestamp,
               maxTimestamp: currentTimestamp,
             },
+            0, // SwapPricingType.TwoStep
           ]),
         ],
         { value: expandDecimals(11, 18) }

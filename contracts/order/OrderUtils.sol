@@ -56,13 +56,15 @@ library OrderUtils {
     // @param orderVault OrderVault
     // @param account the order account
     // @param params IBaseOrderUtils.CreateOrderParams
+    // @param isAtomicOrder whether this is an atomic order
     function createOrder(
         DataStore dataStore,
         EventEmitter eventEmitter,
         OrderVault orderVault,
         IReferralStorage referralStorage,
         address account,
-        IBaseOrderUtils.CreateOrderParams memory params
+        IBaseOrderUtils.CreateOrderParams memory params,
+        bool isAtomicOrder
     ) external returns (bytes32) {
         AccountUtils.validateAccount(account);
 
@@ -148,9 +150,12 @@ library OrderUtils {
 
         CallbackUtils.validateCallbackGasLimit(dataStore, order.callbackGasLimit());
 
-        uint256 estimatedGasLimit = GasUtils.estimateExecuteOrderGasLimit(dataStore, order);
-        uint256 oraclePriceCount = GasUtils.estimateOrderOraclePriceCount(params.addresses.swapPath.length);
-        GasUtils.validateExecutionFee(dataStore, estimatedGasLimit, order.executionFee(), oraclePriceCount);
+        // skip execution fee validation for atomic orders since the user pays gas directly
+        if (!isAtomicOrder) {
+            uint256 estimatedGasLimit = GasUtils.estimateExecuteOrderGasLimit(dataStore, order);
+            uint256 oraclePriceCount = GasUtils.estimateOrderOraclePriceCount(params.addresses.swapPath.length);
+            GasUtils.validateExecutionFee(dataStore, estimatedGasLimit, order.executionFee(), oraclePriceCount);
+        }
 
         bytes32 key = NonceUtils.getNextKey(dataStore);
 

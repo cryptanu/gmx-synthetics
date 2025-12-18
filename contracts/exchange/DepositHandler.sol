@@ -45,7 +45,8 @@ contract DepositHandler is IDepositHandler, BaseHandler {
             eventEmitter,
             depositVault,
             account,
-            params
+            params,
+            false // isAtomicDeposit
         );
     }
 
@@ -98,7 +99,8 @@ contract DepositHandler is IDepositHandler, BaseHandler {
         try this._executeDeposit{ gas: executionGas }(
             key,
             deposit,
-            msg.sender
+            msg.sender,
+            ISwapPricingUtils.SwapPricingType.TwoStep
         ) {
         } catch (bytes memory reasonBytes) {
             _handleDepositError(
@@ -112,9 +114,11 @@ contract DepositHandler is IDepositHandler, BaseHandler {
     // @dev simulate execution of a deposit to check for any errors
     // @param key the deposit key
     // @param params OracleUtils.SimulatePricesParams
+    // @param swapPricingType the swap pricing type (TwoStep or Atomic)
     function simulateExecuteDeposit(
         bytes32 key,
-        OracleUtils.SimulatePricesParams memory params
+        OracleUtils.SimulatePricesParams memory params,
+        ISwapPricingUtils.SwapPricingType swapPricingType
     ) external
         override
         onlyController
@@ -126,18 +130,69 @@ contract DepositHandler is IDepositHandler, BaseHandler {
         this._executeDeposit(
             key,
             deposit,
-            msg.sender
+            msg.sender,
+            swapPricingType
+        );
+    }
+
+    // @notice this function can only be called for markets where Chainlink
+    // on-chain feeds are configured for all the tokens of the market
+    // for example, if the market has index token as DOGE, long token as WETH
+    // and short token as USDC, Chainlink on-chain feeds must be configured
+    // for DOGE, WETH, USDC for this method to be callable for the market
+    function executeAtomicDeposit(
+        address account,
+        DepositUtils.CreateDepositParams calldata params,
+        OracleUtils.SetPricesParams calldata oracleParams
+    )
+        external
+        globalNonReentrant
+        onlyController
+        withOraclePricesForAtomicAction(oracleParams)
+    {
+        FeatureUtils.validateFeature(dataStore, Keys.executeAtomicDepositFeatureDisabledKey(address(this)));
+
+        oracle.validateSequencerUp();
+
+        if (
+            params.longTokenSwapPath.length != 0 ||
+            params.shortTokenSwapPath.length != 0
+        ) {
+            revert Errors.SwapsNotAllowedForAtomicDeposit(
+                params.longTokenSwapPath.length,
+                params.shortTokenSwapPath.length
+            );
+        }
+
+        bytes32 key = DepositUtils.createDeposit(
+            dataStore,
+            eventEmitter,
+            depositVault,
+            account,
+            params,
+            true // isAtomicDeposit
+        );
+
+        Deposit.Props memory deposit = DepositStoreUtils.get(dataStore, key);
+
+        this._executeDeposit(
+            key,
+            deposit,
+            account,
+            ISwapPricingUtils.SwapPricingType.Atomic
         );
     }
 
     // @dev executes a deposit
-    // @param oracleParams OracleUtils.SetPricesParams
+    // @param key the deposit key
+    // @param deposit the deposit to execute
     // @param keeper the keeper executing the deposit
-    // @param startingGas the starting gas
+    // @param swapPricingType the swap pricing type (TwoStep or Atomic)
     function _executeDeposit(
         bytes32 key,
         Deposit.Props memory deposit,
-        address keeper
+        address keeper,
+        ISwapPricingUtils.SwapPricingType swapPricingType
     ) external onlySelf {
         uint256 startingGas = gasleft();
 
@@ -151,7 +206,7 @@ contract DepositHandler is IDepositHandler, BaseHandler {
             key,
             keeper,
             startingGas,
-            ISwapPricingUtils.SwapPricingType.TwoStep,
+            swapPricingType,
             true // includeVirtualInventoryImpact
         );
 

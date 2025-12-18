@@ -404,6 +404,7 @@ contract Config is ReentrancyGuard, RoleModule, BasicMulticall {
         allowedBaseKeys[Keys.CREATE_DEPOSIT_FEATURE_DISABLED] = true;
         allowedBaseKeys[Keys.CANCEL_DEPOSIT_FEATURE_DISABLED] = true;
         allowedBaseKeys[Keys.EXECUTE_DEPOSIT_FEATURE_DISABLED] = true;
+        allowedBaseKeys[Keys.EXECUTE_ATOMIC_DEPOSIT_FEATURE_DISABLED] = true;
 
         allowedBaseKeys[Keys.GLV_SHIFT_FEATURE_DISABLED] = true;
 
@@ -421,6 +422,7 @@ contract Config is ReentrancyGuard, RoleModule, BasicMulticall {
         allowedBaseKeys[Keys.EXECUTE_ADL_FEATURE_DISABLED] = true;
         allowedBaseKeys[Keys.UPDATE_ORDER_FEATURE_DISABLED] = true;
         allowedBaseKeys[Keys.CANCEL_ORDER_FEATURE_DISABLED] = true;
+        allowedBaseKeys[Keys.EXECUTE_ATOMIC_ORDER_FEATURE_DISABLED] = true;
 
         allowedBaseKeys[Keys.CREATE_GLV_DEPOSIT_FEATURE_DISABLED] = true;
         allowedBaseKeys[Keys.CANCEL_GLV_DEPOSIT_FEATURE_DISABLED] = true;

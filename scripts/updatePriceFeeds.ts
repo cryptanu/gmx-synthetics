@@ -13,6 +13,7 @@ async function main() {
   const tokenConfigs = await hre.gmx.getTokens();
   const oracleConfigs = await hre.gmx.getOracle();
 
+  //@todo for monad
   const tokensToUpdate = {
     arbitrum: ["GMX"],
   };

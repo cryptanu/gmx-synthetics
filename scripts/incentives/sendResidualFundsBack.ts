@@ -11,9 +11,19 @@ function getArbValues() {
   };
 }
 
+//@todo
+function getMonadValues() {
+  return {
+    // tokenAddress: "0x912ce59144191c1204e64559fe8253a0e49e6548",
+    // receiver: "0xb6fd0bdb1432b2c77170933120079f436f3bb4fa",
+  };
+}
+
 function getValues() {
   if (hre.network.name === "arbitrum") {
     return getArbValues();
+  } else if (hre.network.name === "monad") {
+    return getMonadValues();
   }
 
   throw new Error(`unsupported network ${hre.network.name}`);

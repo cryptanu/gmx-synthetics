@@ -15,6 +15,11 @@ interface IExchangeRouter {
 
     function cancelDeposit(bytes32 key) external payable;
 
+    function executeAtomicDeposit(
+        DepositUtils.CreateDepositParams calldata params,
+        OracleUtils.SetPricesParams calldata oracleParams
+    ) external payable;
+
     function createWithdrawal(
         WithdrawalUtils.CreateWithdrawalParams calldata params
     ) external payable returns (bytes32);
@@ -35,6 +40,11 @@ interface IExchangeRouter {
     function createOrder(
         IBaseOrderUtils.CreateOrderParams calldata params
     ) external payable returns (bytes32);
+
+    function executeAtomicOrder(
+        IBaseOrderUtils.CreateOrderParams calldata params,
+        OracleUtils.SetPricesParams calldata oracleParams
+    ) external payable;
 
     function updateOrder(
         bytes32 key,

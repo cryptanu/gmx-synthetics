@@ -22,9 +22,13 @@ const func = createDeployFunction({
     const { deployer } = await getNamedAccounts();
     const { execute } = deployments;
 
-    if (!["arbitrum", "avalanche"].includes(network.name)) {
-      await execute("ReferralStorage", { from: deployer, log: true }, "setHandler", deployedContract.address, true);
-    }
+    //@review
+    // if (!["arbitrum", "monad"].includes(network.name)) {
+    //   await execute("ReferralStorage", { from: deployer, log: true }, "setHandler", deployedContract.address, true);
+    // }
+    
+    //always deploy
+    await execute("ReferralStorage", { from: deployer, log: true }, "setHandler", deployedContract.address, true);
 
     await grantRoleIfNotGranted(deployedContract.address, "CONTROLLER");
   },

@@ -8,6 +8,7 @@ import { DEFAULT_MARKET_TYPE, getMarketTokenAddress } from "../utils/market";
 
 const { ethers } = hre;
 
+//@note testnet/local simulate only
 async function getValues(): Promise<{
   wnt: WNT;
 }> {

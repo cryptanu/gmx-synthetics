@@ -9,12 +9,7 @@ import { TokenConfig, TokensConfig } from "../config/tokens";
 import { expandDecimals, formatAmount } from "../utils/math";
 const ethers = hre.ethers;
 
-function getAvalancheFujiValues() {
-  return {
-    oracleApi: "https://synthetics-api-avax-fuji-upovm.ondigitalocean.app/",
-  };
-}
-
+//@todo fix coin gecko
 function getArbibtrumGoerliValues() {
   return {
     oracleApi: "https://gmx-synthetics-api-arb-goerli-4vgxk.ondigitalocean.app/",
@@ -28,17 +23,26 @@ function getArbitrumValues() {
   };
 }
 
+//@todo
+function getMonadValues() {
+  return {
+    oracleApi: "https://mainnet-price-int.bean.exchange/",
+    referralStorageAddress: "",
+  };
+}
+
 function getValues(): {
   oracleApi: string;
   referralStorageAddress?: string;
 } {
-  if (hre.network.name === "avalancheFuji") {
-    return getAvalancheFujiValues();
-  } else if (hre.network.name === "arbitrumGoerli") {
+  if (hre.network.name === "arbitrumGoerli") {
     return getArbibtrumGoerliValues();
   } else if (hre.network.name === "arbitrum") {
     return getArbitrumValues();
+  }  else if (hre.network.name === "monad") {
+    return getMonadValues();
   }
+
   throw new Error("Unsupported network");
 }
 

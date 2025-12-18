@@ -65,12 +65,14 @@ library DepositUtils {
     // @param depositVault DepositVault
     // @param account the depositing account
     // @param params CreateDepositParams
+    // @param isAtomicDeposit whether this is an atomic deposit
     function createDeposit(
         DataStore dataStore,
         EventEmitter eventEmitter,
         DepositVault depositVault,
         address account,
-        CreateDepositParams memory params
+        CreateDepositParams memory params,
+        bool isAtomicDeposit
     ) external returns (bytes32) {
         AccountUtils.validateAccount(account);
 
@@ -132,11 +134,14 @@ library DepositUtils {
 
         CallbackUtils.validateCallbackGasLimit(dataStore, deposit.callbackGasLimit());
 
-        uint256 estimatedGasLimit = GasUtils.estimateExecuteDepositGasLimit(dataStore, deposit);
-        uint256 oraclePriceCount = GasUtils.estimateDepositOraclePriceCount(
-            deposit.longTokenSwapPath().length + deposit.shortTokenSwapPath().length
-        );
-        GasUtils.validateExecutionFee(dataStore, estimatedGasLimit, params.executionFee, oraclePriceCount);
+        // skip execution fee validation for atomic deposits since the user pays gas directly
+        if (!isAtomicDeposit) {
+            uint256 estimatedGasLimit = GasUtils.estimateExecuteDepositGasLimit(dataStore, deposit);
+            uint256 oraclePriceCount = GasUtils.estimateDepositOraclePriceCount(
+                deposit.longTokenSwapPath().length + deposit.shortTokenSwapPath().length
+            );
+            GasUtils.validateExecutionFee(dataStore, estimatedGasLimit, params.executionFee, oraclePriceCount);
+        }
 
         bytes32 key = NonceUtils.getNextKey(dataStore);
 

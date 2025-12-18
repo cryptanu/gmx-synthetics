@@ -5,6 +5,13 @@ import { toLoggableObject } from "../utils/print";
 import got from "got";
 
 function getValues() {
+  //@todo price api tickers
+  if (hre.network.name === "monad") {
+    return {
+      tickersUrl: "https://mainnet-price-int.bean.exchange/prices/tickers",
+    };
+  }
+
   if (hre.network.name === "arbitrum") {
     return {
       tickersUrl: "https://arbitrum-api.gmxinfra.io/prices/tickers",

@@ -14,6 +14,7 @@ const stablecoinSymbols = {
   "USDT.e": true,
   DAI: true,
   "DAI.e": true,
+  testUSDC: true,
 };
 
 const BASIS_POINTS_DIVISOR = 10000;
@@ -34,145 +35,18 @@ const recommendedStablecoinSwapConfig = {
 // expectedPositionImpactRatio: expected ratio of negative to positive position price impact
 // a ratio of 20000 means that the negative position price price impact is twice the positive position price impact
 const recommendedMarketConfig = {
-  arbitrum: {
-    BTC: {
+  //@todo update to validate market config
+  monad: {
+    WMON: {
       negativePositionImpactFactor: decimalToFloat(5, 11),
       negativeSwapImpactFactor: decimalToFloat(5, 11),
       expectedSwapImpactRatio: 10000,
       expectedPositionImpactRatio: 20000,
     },
-    WETH: {
-      negativePositionImpactFactor: decimalToFloat(5, 11),
-      negativeSwapImpactFactor: decimalToFloat(5, 11),
+    WBTC: {
+      negativePositionImpactFactor: decimalToFloat(12, 11),
+      negativeSwapImpactFactor: decimalToFloat(1, 11), // single token market, no swap
       expectedSwapImpactRatio: 10000,
-      expectedPositionImpactRatio: 20000,
-    },
-    BNB: {
-      negativePositionImpactFactor: decimalToFloat(38, 12),
-      negativeSwapImpactFactor: decimalToFloat(38, 12),
-      expectedSwapImpactRatio: 20000,
-      expectedPositionImpactRatio: 20000,
-    },
-    LINK: {
-      negativePositionImpactFactor: decimalToFloat(4, 10),
-      negativeSwapImpactFactor: decimalToFloat(5, 10),
-      expectedSwapImpactRatio: 20000,
-      expectedPositionImpactRatio: 20000,
-    },
-    ARB: {
-      negativePositionImpactFactor: decimalToFloat(5, 10),
-      negativeSwapImpactFactor: decimalToFloat(5, 10),
-      expectedSwapImpactRatio: 20000,
-      expectedPositionImpactRatio: 20000,
-    },
-    UNI: {
-      negativePositionImpactFactor: decimalToFloat(3, 8),
-      negativeSwapImpactFactor: decimalToFloat(3, 8),
-      expectedSwapImpactRatio: 20000,
-      expectedPositionImpactRatio: 20000,
-    },
-    LTC: {
-      negativePositionImpactFactor: decimalToFloat(8, 9),
-      negativeSwapImpactFactor: decimalToFloat(8, 9),
-      expectedSwapImpactRatio: 20000,
-      expectedPositionImpactRatio: 20000,
-    },
-    DOGE: {
-      negativePositionImpactFactor: decimalToFloat(8, 9),
-      negativeSwapImpactFactor: decimalToFloat(8, 9),
-      expectedSwapImpactRatio: 20000,
-      expectedPositionImpactRatio: 20000,
-    },
-    SOL: {
-      negativePositionImpactFactor: decimalToFloat(65, 12),
-      negativeSwapImpactFactor: decimalToFloat(65, 12),
-      expectedSwapImpactRatio: 20000,
-      expectedPositionImpactRatio: 20000,
-    },
-    XRP: {
-      negativePositionImpactFactor: decimalToFloat(5, 9),
-      negativeSwapImpactFactor: decimalToFloat(5, 9),
-      expectedSwapImpactRatio: 20000,
-      expectedPositionImpactRatio: 20000,
-    },
-    AAVE: {
-      negativePositionImpactFactor: decimalToFloat(5, 10),
-      negativeSwapImpactFactor: decimalToFloat(5, 10),
-      expectedSwapImpactRatio: 20000,
-      expectedPositionImpactRatio: 20000,
-    },
-    AVAX: {
-      negativePositionImpactFactor: decimalToFloat(5, 9),
-      negativeSwapImpactFactor: decimalToFloat(5, 9),
-      expectedSwapImpactRatio: 20000,
-      expectedPositionImpactRatio: 20000,
-    },
-    ATOM: {
-      negativePositionImpactFactor: decimalToFloat(26, 9),
-      negativeSwapImpactFactor: decimalToFloat(26, 9),
-      expectedSwapImpactRatio: 20000,
-      expectedPositionImpactRatio: 20000,
-    },
-    NEAR: {
-      negativePositionImpactFactor: decimalToFloat(26, 9),
-      negativeSwapImpactFactor: decimalToFloat(26, 9),
-      expectedSwapImpactRatio: 20000,
-      expectedPositionImpactRatio: 20000,
-    },
-    OP: {
-      negativePositionImpactFactor: decimalToFloat(5, 10),
-      negativeSwapImpactFactor: decimalToFloat(5, 10),
-      expectedSwapImpactRatio: 20000,
-      expectedPositionImpactRatio: 20000,
-    },
-    GMX: {
-      negativePositionImpactFactor: decimalToFloat(5, 10),
-      negativeSwapImpactFactor: decimalToFloat(8, 9),
-      expectedSwapImpactRatio: 20000,
-      expectedPositionImpactRatio: 20000,
-    },
-  },
-  avalanche: {
-    "BTC.b": {
-      negativePositionImpactFactor: decimalToFloat(5, 11).div(2),
-      negativeSwapImpactFactor: decimalToFloat(5, 11).div(2),
-      expectedSwapImpactRatio: 20000,
-      expectedPositionImpactRatio: 16666,
-    },
-    "WETH.e": {
-      negativePositionImpactFactor: decimalToFloat(5, 11).div(2),
-      negativeSwapImpactFactor: decimalToFloat(5, 11).div(2),
-      expectedSwapImpactRatio: 20000,
-      expectedPositionImpactRatio: 16666,
-    },
-    WAVAX: {
-      negativePositionImpactFactor: decimalToFloat(1, 8).div(2),
-      negativeSwapImpactFactor: decimalToFloat(5, 9).div(2),
-      expectedSwapImpactRatio: 20000,
-      expectedPositionImpactRatio: 20000,
-    },
-    LTC: {
-      negativePositionImpactFactor: decimalToFloat(8, 9).div(2),
-      negativeSwapImpactFactor: decimalToFloat(8, 9).div(2),
-      expectedSwapImpactRatio: 20000,
-      expectedPositionImpactRatio: 20000,
-    },
-    DOGE: {
-      negativePositionImpactFactor: decimalToFloat(8, 9).div(2),
-      negativeSwapImpactFactor: decimalToFloat(8, 9).div(2),
-      expectedSwapImpactRatio: 20000,
-      expectedPositionImpactRatio: 20000,
-    },
-    SOL: {
-      negativePositionImpactFactor: decimalToFloat(5, 9).div(2),
-      negativeSwapImpactFactor: decimalToFloat(5, 9).div(2),
-      expectedSwapImpactRatio: 20000,
-      expectedPositionImpactRatio: 20000,
-    },
-    XRP: {
-      negativePositionImpactFactor: decimalToFloat(5, 9).div(2),
-      negativeSwapImpactFactor: decimalToFloat(5, 9).div(2),
-      expectedSwapImpactRatio: 20000,
       expectedPositionImpactRatio: 20000,
     },
   },
@@ -181,6 +55,10 @@ const recommendedMarketConfig = {
 const configTokenMapping = {
   arbitrum: {
     "WBTC.e": "BTC",
+  },
+  //@todo
+  monad: {
+    "WBTC": "BTC",
   },
 };
 
