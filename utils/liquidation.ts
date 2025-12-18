@@ -40,6 +40,8 @@ export async function executeLiquidation(fixture, overrides) {
     gasUsageLabel,
   };
 
+  console.log("[WARN]execute liquidate: "+ JSON.stringify(params));
+
   const txReceipt = await executeWithOracleParams(fixture, params);
   const logs = parseLogs(fixture, txReceipt);
 

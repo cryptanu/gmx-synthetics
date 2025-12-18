@@ -1,6 +1,6 @@
-# GMX Synthetics
+# Bean Exchange Perpetual
 
-Contracts for GMX Synthetics.
+Contracts for BeanExchange Perpetual.
 
 # General Overview
 

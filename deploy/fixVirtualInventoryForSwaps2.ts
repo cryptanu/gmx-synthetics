@@ -6,6 +6,7 @@ import { getMarketKey, getMarketTokenAddresses, getOnchainMarkets } from "../uti
 import { setUintIfDifferent } from "../utils/dataStore";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 
+//@review fix virtual inventory just on arbitrumGeorli
 const func = async ({ deployments, gmx }: HardhatRuntimeEnvironment) => {
   const allMarkets: MarketConfig[] = await gmx.getMarkets();
   const tokens = await gmx.getTokens();

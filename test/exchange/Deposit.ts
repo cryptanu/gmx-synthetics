@@ -402,12 +402,16 @@ describe("Exchange.Deposit", () => {
 
   it("simulateExecuteDeposit", async () => {
     await expect(
-      depositHandler.connect(user0).simulateExecuteDeposit(HashZero, {
-        primaryTokens: [],
-        primaryPrices: [],
-        minTimestamp: 0,
-        maxTimestamp: 0,
-      })
+      depositHandler.connect(user0).simulateExecuteDeposit(
+        HashZero,
+        {
+          primaryTokens: [],
+          primaryPrices: [],
+          minTimestamp: 0,
+          maxTimestamp: 0,
+        },
+        SwapPricingType.TwoStep
+      )
     )
       .to.be.revertedWithCustomError(errorsContract, "Unauthorized")
       .withArgs(user0.address, "CONTROLLER");
@@ -422,7 +426,7 @@ describe("Exchange.Deposit", () => {
 
     const emptyDeposit = await depositStoreUtilsTest.getEmptyDeposit();
 
-    await expect(depositHandler.connect(user0)._executeDeposit(HashZero, emptyDeposit, user0.address))
+    await expect(depositHandler.connect(user0)._executeDeposit(HashZero, emptyDeposit, user0.address, SwapPricingType.TwoStep))
       .to.be.revertedWithCustomError(errorsContract, "Unauthorized")
       .withArgs(user0.address, "SELF");
   });

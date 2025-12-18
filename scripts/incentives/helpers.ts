@@ -17,7 +17,10 @@ for (const address of Object.keys(receiverOverridesMap)) {
 }
 
 function getSubgraphEndpoint() {
-  if (hre.network.name === "arbitrum") {
+  //@todo
+  if (hre.network.name === "monad") {
+    return "https://mainnet-subgraph.bean.exchange/subgraphs/name/bean-synthetics";
+  } else if (hre.network.name === "arbitrum") {
     return "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-arbitrum-stats/api";
   } else if (hre.network.name === "avalanche") {
     return "https://subgraph.satsuma-prod.com/3b2ced13c8d9/gmx/synthetics-avalanche-stats/api";
@@ -27,7 +30,10 @@ function getSubgraphEndpoint() {
 }
 
 function getApiEndpoint() {
-  if (hre.network.name === "arbitrum") {
+  //@todo
+  if (hre.network.name === "monad") {
+    return "https://mainnet-price-int.bean.exchange/";
+  } else if (hre.network.name === "arbitrum") {
     return "https://arbitrum-api.gmxinfra.io";
   } else if (hre.network.name === "avalanche") {
     return "https://avalanche-api.gmxinfra.io";
@@ -102,7 +108,10 @@ export async function requestSubgraph(query: string) {
 
 export function guessBlockNumberByTimestamp(block: ethers.providers.Block, timestamp: number) {
   let blocksPerSecond: number;
-  if (hre.network.name === "arbitrum") {
+  //@todo
+  if (hre.network.name === "monad") {
+    blocksPerSecond = 4;
+  } else if (hre.network.name === "arbitrum") {
     blocksPerSecond = 4;
   } else if (hre.network.name === "avalanche") {
     blocksPerSecond = 0.5;
@@ -167,6 +176,7 @@ export async function requestPrices() {
   return prices;
 }
 
+//@todo update
 export async function requestAllocationData(timestamp: number) {
   const url = new URL(`${getApiEndpoint()}/incentives`);
   url.searchParams.set("timestamp", String(timestamp));

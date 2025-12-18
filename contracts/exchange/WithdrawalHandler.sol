@@ -47,7 +47,8 @@ contract WithdrawalHandler is IWithdrawalHandler, BaseHandler {
             eventEmitter,
             withdrawalVault,
             account,
-            params
+            params,
+            false // isAtomicWithdrawal
         );
     }
 
@@ -149,7 +150,8 @@ contract WithdrawalHandler is IWithdrawalHandler, BaseHandler {
             eventEmitter,
             withdrawalVault,
             account,
-            params
+            params,
+            true // isAtomicWithdrawal
         );
 
         Withdrawal.Props memory withdrawal = WithdrawalStoreUtils.get(dataStore, key);

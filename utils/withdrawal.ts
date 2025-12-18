@@ -39,7 +39,7 @@ export async function createWithdrawal(fixture, overrides = {}) {
   const minLongTokenAmount = overrides.minLongTokenAmount || bigNumberify(0);
   const minShortTokenAmount = overrides.minShortTokenAmount || bigNumberify(0);
   const shouldUnwrapNativeToken = overrides.shouldUnwrapNativeToken || false;
-  const executionFee = overrides.executionFee || "1000000000000000";
+  const executionFee = overrides.executionFee || "1000000000000000"; //@todo refine
   const callbackGasLimit = overrides.callbackGasLimit || bigNumberify(0);
 
   await wnt.mint(withdrawalVault.address, executionFee);

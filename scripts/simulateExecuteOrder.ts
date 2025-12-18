@@ -29,9 +29,33 @@ async function simulateExecuteOrderForArbitrum() {
   });
 }
 
+//@todo
+async function simulateExecuteOrderForMonad() {
+  const address = process.env.KEEPER;
+  await impersonateAccount(address);
+  const impersonatedSigner = await ethers.getSigner(address);
+  const exchangeRouter = await ethers.getContractAt("ExchangeRouter", process.env.EXCHANGE_ROUTER, impersonatedSigner);
+  await exchangeRouter.simulateExecuteOrder(process.env.ORDER_KEY, {
+    primaryTokens: ["0x82aF49447D8a07e3bd95BD0d56f35241523fBab1", "0xaf88d065e77c8cC2239327C5EDb3A432268e5831"],
+    primaryPrices: [
+      {
+        min: expandDecimals(1637, 12),
+        max: expandDecimals(1637, 12),
+      },
+      {
+        min: expandDecimals(1, 24),
+        max: expandDecimals(1, 24),
+      },
+    ],
+  });
+}
+
 async function main() {
   if (process.env.FOR_NETWORK === "arbitrum") {
     await simulateExecuteOrderForArbitrum();
+    return;
+  } else if (process.env.FOR_NETWORK === "monad") {
+    await simulateExecuteOrderForMonad();
     return;
   }
 

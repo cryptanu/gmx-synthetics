@@ -161,7 +161,7 @@ const processGeneralConfig = async ({ generalConfig, handleConfig }) => {
       `estimatedGasFeeBaseAmount`
     );
 
-    if (network.name === "arbitrum") {
+    if ((network.name === "arbitrum") || (network.name === "monad")) {
       throw new Error("estimatedGasFeeBaseAmount should be updated in a separate keeper");
     }
   }
@@ -191,7 +191,7 @@ const processGeneralConfig = async ({ generalConfig, handleConfig }) => {
       `executionGasFeeBaseAmount`
     );
 
-    if (network.name === "arbitrum") {
+    if ((network.name === "arbitrum") || (network.name === "monad")) {
       throw new Error("executionGasFeeBaseAmount should be updated in a separate keeper");
     }
   }

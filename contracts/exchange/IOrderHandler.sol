@@ -10,6 +10,12 @@ interface IOrderHandler {
 
     function simulateExecuteOrder(bytes32 key, OracleUtils.SimulatePricesParams memory params) external;
 
+    function executeAtomicOrder(
+        address account,
+        IBaseOrderUtils.CreateOrderParams calldata params,
+        OracleUtils.SetPricesParams calldata oracleParams
+    ) external;
+
     function updateOrder(
         bytes32 key,
         uint256 sizeDeltaUsd,

@@ -131,6 +131,8 @@ library Keys {
     bytes32 public constant CANCEL_DEPOSIT_FEATURE_DISABLED = keccak256(abi.encode("CANCEL_DEPOSIT_FEATURE_DISABLED"));
     // @dev key for whether the execute deposit feature is disabled
     bytes32 public constant EXECUTE_DEPOSIT_FEATURE_DISABLED = keccak256(abi.encode("EXECUTE_DEPOSIT_FEATURE_DISABLED"));
+    // @dev key for whether the execute atomic deposit feature is disabled
+    bytes32 public constant EXECUTE_ATOMIC_DEPOSIT_FEATURE_DISABLED = keccak256(abi.encode("EXECUTE_ATOMIC_DEPOSIT_FEATURE_DISABLED"));
 
     // @dev key for whether the create withdrawal feature is disabled
     bytes32 public constant CREATE_WITHDRAWAL_FEATURE_DISABLED = keccak256(abi.encode("CREATE_WITHDRAWAL_FEATURE_DISABLED"));
@@ -152,6 +154,8 @@ library Keys {
     bytes32 public constant CREATE_ORDER_FEATURE_DISABLED = keccak256(abi.encode("CREATE_ORDER_FEATURE_DISABLED"));
     // @dev key for whether the execute order feature is disabled
     bytes32 public constant EXECUTE_ORDER_FEATURE_DISABLED = keccak256(abi.encode("EXECUTE_ORDER_FEATURE_DISABLED"));
+    // @dev key for whether the execute atomic order feature is disabled
+    bytes32 public constant EXECUTE_ATOMIC_ORDER_FEATURE_DISABLED = keccak256(abi.encode("EXECUTE_ATOMIC_ORDER_FEATURE_DISABLED"));
     // @dev key for whether the execute adl feature is disabled
     // for liquidations, it can be disabled by using the EXECUTE_ORDER_FEATURE_DISABLED key with the Liquidation
     // order type, ADL orders have a MarketDecrease order type, so a separate key is needed to disable it
@@ -628,6 +632,16 @@ library Keys {
         ));
     }
 
+    // @dev key for whether execute atomic deposit is disabled
+    // @param the execute atomic deposit module
+    // @return key for whether execute atomic deposit is disabled
+    function executeAtomicDepositFeatureDisabledKey(address module) internal pure returns (bytes32) {
+        return keccak256(abi.encode(
+            EXECUTE_ATOMIC_DEPOSIT_FEATURE_DISABLED,
+            module
+        ));
+    }
+
     // @dev key for whether create withdrawal is disabled
     // @param the create withdrawal module
     // @return key for whether create withdrawal is disabled
@@ -715,6 +729,17 @@ library Keys {
     function executeOrderFeatureDisabledKey(address module, uint256 orderType) internal pure returns (bytes32) {
         return keccak256(abi.encode(
             EXECUTE_ORDER_FEATURE_DISABLED,
+            module,
+            orderType
+        ));
+    }
+
+    // @dev key for whether execute atomic order is disabled
+    // @param the execute atomic order module
+    // @return key for whether execute atomic order is disabled
+    function executeAtomicOrderFeatureDisabledKey(address module, uint256 orderType) internal pure returns (bytes32) {
+        return keccak256(abi.encode(
+            EXECUTE_ATOMIC_ORDER_FEATURE_DISABLED,
             module,
             orderType
         ));

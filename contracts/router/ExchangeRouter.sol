@@ -144,9 +144,23 @@ contract ExchangeRouter is IExchangeRouter, BaseRouter {
 
     function simulateExecuteDeposit(
         bytes32 key,
-        OracleUtils.SimulatePricesParams memory simulatedOracleParams
+        OracleUtils.SimulatePricesParams memory simulatedOracleParams,
+        ISwapPricingUtils.SwapPricingType swapPricingType
     ) external payable nonReentrant {
-        depositHandler.simulateExecuteDeposit(key, simulatedOracleParams);
+        depositHandler.simulateExecuteDeposit(key, simulatedOracleParams, swapPricingType);
+    }
+
+    function executeAtomicDeposit(
+        DepositUtils.CreateDepositParams calldata params,
+        OracleUtils.SetPricesParams calldata oracleParams
+    ) external override payable nonReentrant {
+        address account = msg.sender;
+
+        depositHandler.executeAtomicDeposit(
+            account,
+            params,
+            oracleParams
+        );
     }
 
     function createWithdrawal(
@@ -231,6 +245,19 @@ contract ExchangeRouter is IExchangeRouter, BaseRouter {
         return orderHandler.createOrder(
             account,
             params
+        );
+    }
+
+    function executeAtomicOrder(
+        IBaseOrderUtils.CreateOrderParams calldata params,
+        OracleUtils.SetPricesParams calldata oracleParams
+    ) external override payable nonReentrant {
+        address account = msg.sender;
+
+        orderHandler.executeAtomicOrder(
+            account,
+            params,
+            oracleParams
         );
     }
 

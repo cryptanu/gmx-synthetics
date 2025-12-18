@@ -7,6 +7,7 @@ import { getDefaultWallets, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
 import { arbitrum, avalanche } from "wagmi/chains";
+//@todo upgrade wagmi to support monad
 const { chains, publicClient } = configureChains([arbitrum, avalanche], [publicProvider()]);
 
 import { ToastContainer } from "react-toastify";

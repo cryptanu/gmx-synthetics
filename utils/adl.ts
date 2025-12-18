@@ -27,6 +27,8 @@ export async function updateAdlState(fixture, overrides = {}) {
   const block = await ethers.provider.getBlock();
 
   const params = {
+    // @todo the old version
+    // oracleBlockNumber: bigNumberify(block.number - 1),
     oracleBlockNumber: bigNumberify(block.number),
     tokens,
     tokenOracleTypes,

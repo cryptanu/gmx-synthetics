@@ -24,10 +24,20 @@ function getArbValues() {
   };
 }
 
+function getMonadValues() {
+  return {
+    //@todo
+    batchSenderAddress: "",
+  };
+}
+
 function getValues() {
   if (hre.network.name === "arbitrum") {
     return getArbValues();
+  } else if (hre.network.name === "monad") {
+    return getMonadValues();
   }
+  
 
   throw new Error(`unsupported network ${hre.network.name}`);
 }

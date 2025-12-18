@@ -26,7 +26,13 @@ export function createDeployFunction({
 }: {
   contractName: string;
   dependencyNames?: string[];
-  getDeployArgs?: (args: { dependencyContracts: any }) => Promise<any[]>;
+  getDeployArgs?: (args: {
+    dependencyContracts: any;
+    network: any;
+    get: any;
+    getNamedAccounts: any;
+    gmx: any;
+  }) => Promise<any[]>;
   libraryNames?: string[];
   afterDeploy?: (args: {
     deployedContract: DeployResult;

@@ -13,6 +13,11 @@ const expectedTimelockMethods = [
 async function getTimelock() {
   const network = hre.network.name;
 
+  //@todo
+  if (network === "monad") {
+    return await ethers.getContractAt("Timelock", "0x62aB76Ed722C507f297f2B97920dCA04518fe274");
+  }
+
   if (network === "arbitrum") {
     return await ethers.getContractAt("Timelock", "0x62aB76Ed722C507f297f2B97920dCA04518fe274");
   }
@@ -77,6 +82,89 @@ async function main() {
   const timelock = await getTimelock();
 
   const rolesToAdd = {
+    //@todo add roles
+    monad: [
+      // {
+      //   role: "ADL_KEEPER",
+      //   member: "0x8e66ee36f2c7b9461f50aa0b53ef0e4e47f4abbf",
+      // },
+      // {
+      //   role: "ADL_KEEPER",
+      //   member: "0x6a2b3a13be0c723674bcfd722d4e133b3f356e05",
+      // },
+      // {
+      //   role: "ADL_KEEPER",
+      //   member: "0xdd5c59b7c4e8fad38732caffbebd20a61bf9f3fc",
+      // },
+      // {
+      //   role: "ADL_KEEPER",
+      //   member: "0xeb2bb25ddd2b1872d5189ae72fcec9b160dd3fb2",
+      // },
+      // {
+      //   role: "FROZEN_ORDER_KEEPER",
+      //   member: "0x8e66ee36f2c7b9461f50aa0b53ef0e4e47f4abbf",
+      // },
+      // {
+      //   role: "FROZEN_ORDER_KEEPER",
+      //   member: "0x6a2b3a13be0c723674bcfd722d4e133b3f356e05",
+      // },
+      // {
+      //   role: "FROZEN_ORDER_KEEPER",
+      //   member: "0xdd5c59b7c4e8fad38732caffbebd20a61bf9f3fc",
+      // },
+      // {
+      //   role: "FROZEN_ORDER_KEEPER",
+      //   member: "0xeb2bb25ddd2b1872d5189ae72fcec9b160dd3fb2",
+      // },
+      // {
+      //   role: "LIMITED_CONFIG_KEEPER",
+      //   member: "0x8e66ee36f2c7b9461f50aa0b53ef0e4e47f4abbf",
+      // },
+      // {
+      //   role: "LIMITED_CONFIG_KEEPER",
+      //   member: "0x6a2b3a13be0c723674bcfd722d4e133b3f356e05",
+      // },
+      // {
+      //   role: "LIMITED_CONFIG_KEEPER",
+      //   member: "0xdd5c59b7c4e8fad38732caffbebd20a61bf9f3fc",
+      // },
+      // {
+      //   role: "LIMITED_CONFIG_KEEPER",
+      //   member: "0xeb2bb25ddd2b1872d5189ae72fcec9b160dd3fb2",
+      // },
+      // {
+      //   role: "LIQUIDATION_KEEPER",
+      //   member: "0x8e66ee36f2c7b9461f50aa0b53ef0e4e47f4abbf",
+      // },
+      // {
+      //   role: "LIQUIDATION_KEEPER",
+      //   member: "0x6a2b3a13be0c723674bcfd722d4e133b3f356e05",
+      // },
+      // {
+      //   role: "LIQUIDATION_KEEPER",
+      //   member: "0xdd5c59b7c4e8fad38732caffbebd20a61bf9f3fc",
+      // },
+      // {
+      //   role: "LIQUIDATION_KEEPER",
+      //   member: "0xeb2bb25ddd2b1872d5189ae72fcec9b160dd3fb2",
+      // },
+      // {
+      //   role: "ORDER_KEEPER",
+      //   member: "0x8e66ee36f2c7b9461f50aa0b53ef0e4e47f4abbf",
+      // },
+      // {
+      //   role: "ORDER_KEEPER",
+      //   member: "0x6a2b3a13be0c723674bcfd722d4e133b3f356e05",
+      // },
+      // {
+      //   role: "ORDER_KEEPER",
+      //   member: "0xdd5c59b7c4e8fad38732caffbebd20a61bf9f3fc",
+      // },
+      // {
+      //   role: "ORDER_KEEPER",
+      //   member: "0xeb2bb25ddd2b1872d5189ae72fcec9b160dd3fb2",
+      // },
+    ],
     arbitrum: [
       {
         role: "ADL_KEEPER",
@@ -163,6 +251,8 @@ async function main() {
   };
 
   const rolesToRemove = {
+    //@todo
+    monad: [],
     arbitrum: [],
     avalanche: [],
   };

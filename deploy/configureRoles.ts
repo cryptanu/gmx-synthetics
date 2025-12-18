@@ -13,10 +13,9 @@ import { grantRoleIfNotGranted, revokeRoleIfGranted } from "../utils/role";
 const rolesToRemove = {
   hardhat: [],
   arbitrum: [],
-  avalanche: [],
-  avalancheFuji: [],
+  monad: [],
   arbitrumGoerli: [],
-  arbitrumSepolia: [],
+  monad: [],
 };
 
 const func = async ({ gmx, network }) => {

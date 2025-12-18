@@ -4,12 +4,19 @@ pragma solidity ^0.8.0;
 
 import "../deposit/DepositUtils.sol";
 import "../oracle/OracleUtils.sol";
+import "../pricing/ISwapPricingUtils.sol";
 
 interface IDepositHandler {
     function createDeposit(address account, DepositUtils.CreateDepositParams calldata params) external returns (bytes32);
     function cancelDeposit(bytes32 key) external;
+    function executeAtomicDeposit(
+        address account,
+        DepositUtils.CreateDepositParams calldata params,
+        OracleUtils.SetPricesParams calldata oracleParams
+    ) external;
     function simulateExecuteDeposit(
         bytes32 key,
-        OracleUtils.SimulatePricesParams memory params
+        OracleUtils.SimulatePricesParams memory params,
+        ISwapPricingUtils.SwapPricingType swapPricingType
     ) external;
 }

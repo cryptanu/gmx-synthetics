@@ -12,9 +12,10 @@
     "outDir": "dist",
     "declarationMap": true,
     "noImplicitAny": false,
+    "resolveJsonModule": true,
     "rootDirs": ["./src", "./scripts", "./test"]
   },
   "exclude": ["dist", "node_modules"],
-  "include": ["./test", "./src", "./scripts"],
+  "include": ["./test", "./src", "./scripts", "./config"],
   "files": ["./hardhat.config.ts"]
 }

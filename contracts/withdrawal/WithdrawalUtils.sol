@@ -78,6 +78,7 @@ library WithdrawalUtils {
      * @param withdrawalVault WithdrawalVault.
      * @param account The account that initiated the withdrawal.
      * @param params The parameters for creating the withdrawal.
+     * @param isAtomicWithdrawal Whether this is an atomic withdrawal.
      * @return The unique identifier of the created withdrawal.
      */
     function createWithdrawal(
@@ -85,7 +86,8 @@ library WithdrawalUtils {
         EventEmitter eventEmitter,
         WithdrawalVault withdrawalVault,
         address account,
-        CreateWithdrawalParams memory params
+        CreateWithdrawalParams memory params,
+        bool isAtomicWithdrawal
     ) external returns (bytes32) {
         AccountUtils.validateAccount(account);
 
@@ -136,9 +138,12 @@ library WithdrawalUtils {
 
         CallbackUtils.validateCallbackGasLimit(dataStore, withdrawal.callbackGasLimit());
 
-        uint256 estimatedGasLimit = GasUtils.estimateExecuteWithdrawalGasLimit(dataStore, withdrawal);
-        uint256 oraclePriceCount = GasUtils.estimateWithdrawalOraclePriceCount(withdrawal.longTokenSwapPath().length + withdrawal.shortTokenSwapPath().length);
-        GasUtils.validateExecutionFee(dataStore, estimatedGasLimit, params.executionFee, oraclePriceCount);
+        // skip execution fee validation for atomic withdrawals since the user pays gas directly
+        if (!isAtomicWithdrawal) {
+            uint256 estimatedGasLimit = GasUtils.estimateExecuteWithdrawalGasLimit(dataStore, withdrawal);
+            uint256 oraclePriceCount = GasUtils.estimateWithdrawalOraclePriceCount(withdrawal.longTokenSwapPath().length + withdrawal.shortTokenSwapPath().length);
+            GasUtils.validateExecutionFee(dataStore, estimatedGasLimit, params.executionFee, oraclePriceCount);
+        }
 
         bytes32 key = NonceUtils.getNextKey(dataStore);
 

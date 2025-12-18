@@ -1,7 +1,15 @@
 import hre from "hardhat";
 import * as keys from "../utils/keys";
+import { promises as fsPromises } from 'fs';
+import MARKET from './keepers/markets.json';
+import MARKET_STATE from '../config/marketstate.json';
 
+const FILE_MARKETS = "./keepers/markets.json";
+const FILE_MARKET_STATE = "../config/marketstate.json";
+
+//@todo review
 async function main() {
+  const networkName = hre.network.name;
   const tokens = await hre.gmx.getTokens();
   const addressToSymbol: { [address: string]: string } = {};
   for (const [tokenSymbol, tokenConfig] of Object.entries(tokens)) {
@@ -14,26 +22,51 @@ async function main() {
 
   const reader = await hre.ethers.getContract("Reader");
   const dataStore = await hre.ethers.getContract("DataStore");
-  console.log("reading data from DataStore %s Reader %s", dataStore.address, reader.address);
-  const markets = [...(await reader.getMarkets(dataStore.address, 0, 100))];
-  const isDisabled = await Promise.all(
-    markets.map((market) => dataStore.getBool(keys.isMarketDisabledKey(market.marketToken)))
-  );
+  
+  const deployedMarkets = [...(await reader.getMarkets(dataStore.address, 0, 100))];
+  deployedMarkets.sort((a, b) => a.indexToken.localeCompare(b.indexToken));
 
-  markets.sort((a, b) => a.indexToken.localeCompare(b.indexToken));
-  for (const [i, market] of markets.entries()) {
-    const indexTokenSymbol = addressToSymbol[market.indexToken];
-    const longTokenSymbol = addressToSymbol[market.longToken];
-    const shortTokenSymbol = addressToSymbol[market.shortToken];
+  const netMarkets = {};
+  const netMarketsState = [];
+
+  for (const deployedMarket of deployedMarkets) {
+    const isDisabled = await dataStore.getBool(keys.isMarketDisabledKey(deployedMarket.marketToken));
+    const indexTokenSymbol = addressToSymbol[deployedMarket.indexToken];
+    const longTokenSymbol = addressToSymbol[deployedMarket.longToken];
+    const shortTokenSymbol = addressToSymbol[deployedMarket.shortToken];
+    const marketName = (indexTokenSymbol ? indexTokenSymbol : "SWAP") + "_" + longTokenSymbol + "_" + shortTokenSymbol;
     console.log(
       "%s index: %s long: %s short: %s is disabled: %s",
-      market.marketToken,
+      deployedMarket.marketToken,
       indexTokenSymbol?.padEnd(5) || "(swap only)",
       longTokenSymbol?.padEnd(5),
       shortTokenSymbol?.padEnd(5),
-      isDisabled[i]
+      isDisabled
     );
+
+    netMarkets[deployedMarket.marketToken] = {
+      name: marketName,
+      address: deployedMarket.marketToken,
+      indexToken: deployedMarket.indexToken,
+      longToken: deployedMarket.longToken,
+      shortToken: deployedMarket.shortToken
+    };
+
+    netMarketsState.push({
+      address: deployedMarket.marketToken,
+      name: marketName,
+      isDisabled: isDisabled
+    })
   }
+
+  MARKET[networkName] = netMarkets;
+  MARKET_STATE[networkName] = netMarketsState;
+
+  await fsPromises.writeFile(FILE_MARKETS, JSON.stringify(MARKET,  null, 2));
+  console.log("dumping market info to files --> %s ... DONE!", FILE_MARKETS);
+
+  await fsPromises.writeFile(FILE_MARKET_STATE, JSON.stringify(MARKET_STATE,  null, 2));
+  console.log("dumping market state info to files --> %s ... DONE!", FILE_MARKET_STATE);
 }
 
 main()

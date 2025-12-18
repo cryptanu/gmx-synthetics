@@ -3,6 +3,7 @@ import hre from "hardhat";
 import { bigNumberify, expandDecimals, formatAmount } from "../utils/math";
 import * as keys from "../utils/keys";
 
+//@todo update monad stable coins
 const stablecoinPrices = {
   ["0xaf88d065e77c8cC2239327C5EDb3A432268e5831".toLowerCase()]: expandDecimals(1, 24), // USDC (Arbitrum)
   ["0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8".toLowerCase()]: expandDecimals(1, 24), // USDC.e (Arbitrum)
@@ -18,15 +19,13 @@ const stablecoinPrices = {
 
 function getTickersUrl() {
   const networkName = hre.network.name;
-
-  if (networkName === "arbitrum") {
+  if (networkName === "monad") {
+    //@todo
+    return "https://mainnet-price-int.bean.exchange/prices/tickers";
+  } else if (networkName === "arbitrum") {
     return "https://arbitrum-api.gmxinfra.io/prices/tickers";
-  } else if (networkName === "avalanche") {
-    return "https://avalanche-api.gmxinfra.io/prices/tickers";
   } else if (networkName === "arbitrumGoerli") {
     return "https://gmx-synthetics-api-arb-goerli-4vgxk.ondigitalocean.app/prices/tickers";
-  } else if (networkName === "avalancheFuji") {
-    return "https://synthetics-api-avax-fuji-upovm.ondigitalocean.app/prices/tickers";
   } else {
     throw new Error(`Unsupported network: ${networkName}`);
   }

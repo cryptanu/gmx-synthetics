@@ -6,6 +6,7 @@ import { bigNumberify, expandDecimals } from "./math";
 import { executeWithOracleParams } from "./exchange";
 import { parseLogs, getEventDataValue } from "./event";
 import { getCancellationReason, getErrorString } from "./error";
+// import { execute } from '../.graphclient'
 
 import * as keys from "./keys";
 
@@ -25,6 +26,24 @@ export const DecreasePositionSwapType = {
   SwapPnlTokenToCollateralToken: 1,
   SwapCollateralTokenToPnlToken: 2,
 };
+
+// @todo limit order
+// export async function getLimitOrderFromSubgraph() {
+//   const myQuery = `
+//     query KeeperQuery {
+//       orders(where: {orderType_in: [3,5], status: Created},first: 10) {
+//         id
+//         orderType
+//         triggerPrice
+//         status
+//       }
+//     }
+//   `
+//   const result = await execute(myQuery, {})
+//   console.log('==============================> print limit order: ', result)
+
+//   return result.data.orders
+// }
 
 export function getOrderCount(dataStore) {
   return dataStore.getBytes32Count(keys.ORDER_LIST);
