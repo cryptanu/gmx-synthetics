@@ -60,6 +60,7 @@ export async function executeWithOracleParams(fixture, overrides) {
     dataStreamTokens,
     dataStreamData,
     priceFeedTokens,
+    pythPriceFeedTokens
   } = overrides;
   const { provider } = ethers;
   const { signers } = fixture.accounts;
@@ -110,6 +111,7 @@ export async function executeWithOracleParams(fixture, overrides) {
     dataStreamTokens,
     dataStreamData,
     priceFeedTokens,
+    pythPriceFeedTokens
   };
 
   let oracleParams;

@@ -1,14 +1,19 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { createDeployFunction } from "../utils/deploy";
-import { setBoolIfDifferent } from "../utils/dataStore";
+import {
+  setAddressIfDifferent,
+  setBoolIfDifferent,
+  setBytes32IfDifferent,
+  setUintIfDifferent,
+} from "../utils/dataStore";
 import * as keys from "../utils/keys";
 import { network } from "hardhat";
 
-const constructorContracts = [];
+const constructorContracts = ["DataStore"];
 
 const skip = async ({ gmx, network }: any) => {
   const oracleConfig = await gmx.getOracle();
-  if (!oracleConfig.pythPriceFeedAddress || !oracleConfig.pythPriceFeedProviderDecimals) {
+  if (!oracleConfig.pythPriceFeedAddress || !oracleConfig.pythPriceFeedAgeTimestamp) {
     console.log(`Skipping PythPriceFeedProvider deployment: no pyth config for network ${network.name}`);
     return true;
   }
@@ -18,10 +23,8 @@ const skip = async ({ gmx, network }: any) => {
 const func = createDeployFunction({
   contractName: "PythPriceFeedProvider",
   dependencyNames: constructorContracts,
-  getDeployArgs: async ({ dependencyContracts, getNamedAccounts, gmx }) => {
-    const { deployer } = await getNamedAccounts();
-    const oracleConfig = await gmx.getOracle();
-    return [deployer, oracleConfig.pythPriceFeedProviderDecimals, oracleConfig.pythPriceFeedAddress];
+  getDeployArgs: async ({ dependencyContracts }) => {
+    return constructorContracts.map((dependencyName) => dependencyContracts[dependencyName].address);
   },
   afterDeploy: async ({ deployedContract, gmx, getNamedAccounts, deployments }) => {
     await setBoolIfDifferent(
@@ -29,10 +32,31 @@ const func = createDeployFunction({
       true,
       "isOracleProviderEnabledKey"
     );
+
     const oracleConfig = await gmx.getOracle();
     if (!oracleConfig.pythPriceFeedAddress) {
       console.log("Skipping PythPriceFeedProvider deployment: no pyth price feed address for network", network.name);
       return;
+    } else {
+      await setAddressIfDifferent(
+        keys.PYTH_PRICE_FEED_ADDRESS,
+        oracleConfig.pythPriceFeedAddress,
+        "PYTH_PRICE_FEED_ADDRESS"
+      );
+
+      await setUintIfDifferent(
+        keys.PYTH_PRICE_FEED_PROVIDER_AGE_TIMESTAMP,
+        oracleConfig.pythPriceFeedAgeTimestamp,
+        "PYTH_PRICE_FEED_PROVIDER_AGE_TIMESTAMP"
+      );
+
+      if (oracleConfig.pythPriceFeedProvderIsAtomic) {
+        await setBoolIfDifferent(
+          keys.isAtomicOracleProviderKey(deployedContract.address),
+          true,
+          "isAtomicOracleProviderKey"
+        );
+      }
     }
     for (const [tokenSymbol, tokenObj] of Object.entries(
       oracleConfig.tokens as Record<string, { pythPriceFeed: { pythPriceFeedId: string } }>
@@ -51,21 +75,11 @@ const func = createDeployFunction({
         continue;
       }
 
-      const { deployer } = await getNamedAccounts();
-
-      const priceFeedOnChain = await deployments.read("PythPriceFeedProvider", "priceFeedIds", address);
-      if (priceFeedOnChain !== pythPriceFeed.pythPriceFeedId) {
-        console.log("executing setPriceFeedId to Pyth price feed for ", tokenSymbol);
-        await deployments.execute(
-          "PythPriceFeedProvider",
-          { from: deployer, log: true },
-          "setPriceFeedId",
-          address,
-          pythPriceFeed.pythPriceFeedId
-        );
-      } else {
-        console.log("Pyth price feed already set for", tokenSymbol);
-      }
+      await setBytes32IfDifferent(
+        keys.pythPriceFeedIdKey(address),
+        pythPriceFeed.pythPriceFeedId,
+        "PYTH_PRICE_FEED_ID"
+      );
     }
   },
 });

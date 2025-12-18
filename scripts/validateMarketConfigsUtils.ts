@@ -35,7 +35,7 @@ const recommendedStablecoinSwapConfig = {
 // expectedPositionImpactRatio: expected ratio of negative to positive position price impact
 // a ratio of 20000 means that the negative position price price impact is twice the positive position price impact
 const recommendedMarketConfig = {
-  //@todo update to validate market config
+  //@fixme update to validate market config
   monad: {
     WMON: {
       negativePositionImpactFactor: decimalToFloat(5, 11),
@@ -56,7 +56,7 @@ const configTokenMapping = {
   arbitrum: {
     "WBTC.e": "BTC",
   },
-  //@todo
+  //@fixme
   monad: {
     "WBTC": "BTC",
   },

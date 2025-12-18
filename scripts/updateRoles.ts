@@ -13,7 +13,7 @@ const expectedTimelockMethods = [
 async function getTimelock() {
   const network = hre.network.name;
 
-  //@todo
+  //@fixme
   if (network === "monad") {
     return await ethers.getContractAt("Timelock", "0x62aB76Ed722C507f297f2B97920dCA04518fe274");
   }

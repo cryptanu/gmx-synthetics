@@ -196,6 +196,13 @@ library Keys {
     bytes32 public constant ORACLE_PROVIDER_FOR_TOKEN = keccak256(abi.encode("ORACLE_PROVIDER_FOR_TOKEN"));
     // @dev key for the chainlink payment token
     bytes32 public constant CHAINLINK_PAYMENT_TOKEN = keccak256(abi.encode("CHAINLINK_PAYMENT_TOKEN"));
+    // @dev key for the pyth price feed address
+    bytes32 public constant PYTH_PRICE_FEED_ADDRESS = keccak256(abi.encode("PYTH_PRICE_FEED_ADDRESS"));
+    // @dev key for the pyth price feed id
+    bytes32 public constant PYTH_PRICE_FEED_ID = keccak256(abi.encode("PYTH_PRICE_FEED_ID"));
+    // @dev key for the age timestamp for the pyth price feed provider
+    bytes32 public constant PYTH_PRICE_FEED_PROVIDER_AGE_TIMESTAMP =
+        keccak256(abi.encode("PYTH_PRICE_FEED_PROVIDER_AGE_TIMESTAMP"));
     // @dev key for the sequencer grace duration
     bytes32 public constant SEQUENCER_GRACE_DURATION = keccak256(abi.encode("SEQUENCER_GRACE_DURATION"));
 
@@ -1763,10 +1770,13 @@ library Keys {
     // @param market the market to check
     // @return key for is market disabled
     function isGlvMarketDisabledKey(address glv, address market) internal pure returns (bytes32) {
-        return keccak256(abi.encode(
-            IS_GLV_MARKET_DISABLED,
-            glv,
-            market
-        ));
+        return keccak256(abi.encode(IS_GLV_MARKET_DISABLED, glv, market));
+    }
+
+    // @dev key for pyth price feed id
+    // @param token the token to get the key for
+    // @return key for pyth price feed id
+    function pythPriceFeedIdKey(address token) internal pure returns (bytes32) {
+        return keccak256(abi.encode(PYTH_PRICE_FEED_ID, token));
     }
 }

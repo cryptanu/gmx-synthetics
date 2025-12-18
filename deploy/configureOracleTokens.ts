@@ -4,12 +4,12 @@ import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { setAddressIfDifferent, setBytes32IfDifferent, setUintIfDifferent } from "../utils/dataStore";
 import { OracleProvider } from "../config/oracle";
 
-const func = async ({ gmx, deployments, network }: HardhatRuntimeEnvironment) => {
+const func = async ({ gmx, deployments }: HardhatRuntimeEnvironment) => {
   const oracleConfig = await gmx.getOracle();
   const tokens = await gmx.getTokens();
   const { get } = deployments;
 
-  const defaultOracleProvider: OracleProvider = network.name === "hardhat" ? "gmOracle" : "chainlinkDataStream";
+  const defaultOracleProvider: OracleProvider = "gmOracle";
   const oracleProviders = {
     gmOracle: (await get("GmOracleProvider")).address,
     chainlinkDataStream: (await get("ChainlinkDataStreamProvider")).address,

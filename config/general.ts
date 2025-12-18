@@ -130,7 +130,7 @@ export default async function ({ network }: HardhatRuntimeEnvironment) {
       maxCallbackGasLimit: 3_000_000,
       estimatedGasFeeBaseAmount: false,
       executionGasFeeBaseAmount: false,
-      //@todo config chainlink interface v2/v3 sequencer only for layer 2
+      //@fixme config chainlink interface v2/v3 sequencer only for layer 2
       //disable wont use
       // sequencerUptimeFeed: "0xFdB631F5EE196F0ed6FAa767959853A9F217697D",
     },

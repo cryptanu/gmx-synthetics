@@ -1,1 +1,32 @@
-artifacts/
+node_modules
+dist
+.env
+coverage
+coverage.json
+contracts/Test*.sol
+review_notes.md
+typechain
+typechain-types
+.DS_store
+tmp
+keys
+.rpcs.json
+out
+
+#Hardhat files
+/cache/
+artifacts
+deployments/localhost
+deployments.txt
+
+#Foundry files
+cache_forge
+
+#anvil files
+anvil-state.json
+
+/.vscode
+
+.keys/
+
+deployments/monad

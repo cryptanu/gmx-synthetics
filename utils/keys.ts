@@ -74,6 +74,11 @@ export const IS_ORACLE_PROVIDER_ENABLED = hashString("IS_ORACLE_PROVIDER_ENABLED
 export const IS_ATOMIC_ORACLE_PROVIDER = hashString("IS_ATOMIC_ORACLE_PROVIDER");
 export const CHAINLINK_PAYMENT_TOKEN = hashString("CHAINLINK_PAYMENT_TOKEN");
 
+// @ghoulouis pyth price feed keys
+export const PYTH_PRICE_FEED_ADDRESS = hashString("PYTH_PRICE_FEED_ADDRESS");
+export const PYTH_PRICE_FEED_PROVIDER_AGE_TIMESTAMP = hashString("PYTH_PRICE_FEED_PROVIDER_AGE_TIMESTAMP");
+export const PYTH_PRICE_FEED_ID = hashString("PYTH_PRICE_FEED_ID");
+
 export const MIN_COLLATERAL_FACTOR = hashString("MIN_COLLATERAL_FACTOR");
 export const MIN_COLLATERAL_FACTOR_FOR_OPEN_INTEREST_MULTIPLIER = hashString(
   "MIN_COLLATERAL_FACTOR_FOR_OPEN_INTEREST_MULTIPLIER"
@@ -596,4 +601,9 @@ export function subaccountActionCountKey(account: string, subaccount: string, ac
 
 export function subaccountAutoTopUpAmountKey(account: string, subaccount: string) {
   return hashData(["bytes32", "address", "address"], [SUBACCOUNT_AUTO_TOP_UP_AMOUNT, account, subaccount]);
+}
+
+// @ghoulouis pyth price feed keys
+export function pythPriceFeedIdKey(token: string) {
+  return hashData(["bytes32", "address"], [PYTH_PRICE_FEED_ID, token]);
 }

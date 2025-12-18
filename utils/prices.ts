@@ -19,7 +19,7 @@ export async function fetchTickerPrices() {
 }
 
 export function getTickersUrl() {
-  //@todo
+  //@fixme
   if (hre.network.name === "monad") {
     return "https://mainnet-price-int.bean.exchange/prices/tickers";
   }

@@ -4,7 +4,7 @@ import { parseError, getErrorString } from "../utils/error";
 
 const { ethers } = hre;
 
-let errorBytes = process.env.ERROR;
+let errorBytes = "0x01d6f7b1"
 
 // let errorBytes =
 // "0x5dac504d000000000000000000000000000000000000000000000000001550f7df836c0000000000000000000000000000000000000000000000000000038d7ea4c68000";

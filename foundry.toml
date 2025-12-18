@@ -4,3 +4,8 @@ out = 'out'
 test = 'test/test-solidity'
 libs = ['node_modules', 'lib']
 cache_path  = 'cache_forge'
+remappings = [
+  "openzeppelin-contracts/=node_modules/openzeppelin-contracts/",
+  "chainlink/=node_modules/@chainlink/",
+  "lib/forge-std/=lib/forge-std/",
+]

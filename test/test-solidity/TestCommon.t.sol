@@ -7,6 +7,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 // https://docs.monad.xyz/developer-essentials/network-information?utm_source=chatgpt.com
 address constant USDC = 0x754704Bc059F8C67012fEd69BC8A327a5aafb603;
+address constant TEST_USDC = 0x2BE286D3ff75E380ea9695D7cdA7e7292444C19E;
 address constant WMON = 0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A;
 address constant WETH = 0xEE8c0E9f1BFFb4Eb878d8f15f368A02a35481242;
 address constant WBTC = 0x0555E30da8f98308EdB960aa94C0Db47230d2B9c;

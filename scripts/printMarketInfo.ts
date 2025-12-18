@@ -3,7 +3,7 @@ import hre from "hardhat";
 import { bigNumberify, expandDecimals, formatAmount } from "../utils/math";
 import * as keys from "../utils/keys";
 
-//@todo update monad stable coins
+//@fixme update monad stable coins
 const stablecoinPrices = {
   ["0xaf88d065e77c8cC2239327C5EDb3A432268e5831".toLowerCase()]: expandDecimals(1, 24), // USDC (Arbitrum)
   ["0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8".toLowerCase()]: expandDecimals(1, 24), // USDC.e (Arbitrum)

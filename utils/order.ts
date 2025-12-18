@@ -143,6 +143,7 @@ export async function createOrder(fixture, overrides) {
   return { txReceipt, logs, key };
 }
 
+//@todo review add executer account
 export async function executeOrder(fixture, overrides = {}) {
   const { wnt, usdc } = fixture.contracts;
   const { gasUsageLabel, oracleBlockNumberOffset } = overrides;
@@ -156,6 +157,7 @@ export async function executeOrder(fixture, overrides = {}) {
   const maxPrices = overrides.maxPrices || [expandDecimals(5000, 4), expandDecimals(1, 6)];
   const orderKeys = await getOrderKeys(dataStore, 0, 20);
   const orderKey = overrides.orderKey || orderKeys[orderKeys.length - 1];
+  const executer = overrides.executer;
   const order = await reader.getOrder(dataStore.address, orderKey);
   let oracleBlockNumber = overrides.oracleBlockNumber || order.numbers.updatedAtBlock;
   oracleBlockNumber = bigNumberify(oracleBlockNumber);
@@ -182,7 +184,7 @@ export async function executeOrder(fixture, overrides = {}) {
     minPrices,
     maxPrices,
     simulate: overrides.simulate,
-    execute: overrides.simulate ? orderHandler.simulateExecuteOrder : orderHandler.executeOrder,
+    execute: overrides.simulate ? orderHandler.simulateExecuteOrder : (executer ? orderHandler.connect(executer).executeOrder : orderHandler.executeOrder),
     gasUsageLabel,
     oracleBlocks,
     minOracleBlockNumbers,

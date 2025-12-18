@@ -370,4 +370,9 @@ library Errors {
     // Uint256Mask errors
     error MaskIndexOutOfBounds(uint256 index, string label);
     error DuplicatedIndex(uint256 index, string label);
+
+    // PythPriceFeedProvider errors
+    error PythPriceFeedProviderEmptyPriceFeed(address token);
+    error PythPriceFeedProviderInvalidPrice(int64 price, int32 expo);
+    error PythPriceFeedProviderInvalidScale(int32 expo);
 }

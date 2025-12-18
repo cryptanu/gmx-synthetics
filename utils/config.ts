@@ -83,6 +83,9 @@ export const EXCLUDED_CONFIG_KEYS = {
   GLV_PENDING_SHIFT: true,
   GLV_PENDING_SHIFT_BACKREF: true,
   GLV_SUPPORTED_MARKET_LIST: true,
+  PYTH_PRICE_FEED_ADDRESS: true,
+  PYTH_PRICE_FEED_PROVIDER_AGE_TIMESTAMP: true,
+  PYTH_PRICE_FEED_ID: true,
 };
 
 export async function appendUintConfigIfDifferent(

@@ -29,13 +29,25 @@ export async function executeLiquidation(fixture, overrides) {
     dataStreamData,
     priceFeedTokens,
     execute: async (key, oracleParams) => {
-      return await liquidationHandler.executeLiquidation(
-        account,
-        market.marketToken,
-        collateralToken.address,
-        isLong,
-        oracleParams
-      );
+      if(overrides.exec){
+        //@todo use exec wallet
+        return await liquidationHandler.connect(overrides.exec).executeLiquidation(
+          account,
+          market.marketToken,
+          collateralToken.address,
+          isLong,
+          oracleParams
+        );
+      }
+      else{
+        return await liquidationHandler.executeLiquidation(
+          account,
+          market.marketToken,
+          collateralToken.address,
+          isLong,
+          oracleParams
+        ); 
+      }
     },
     gasUsageLabel,
   };

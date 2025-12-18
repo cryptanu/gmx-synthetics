@@ -50,7 +50,8 @@ export type OracleConfig = {
   maxRefPriceDeviationFactor: BigNumberish;
   chainlinkPaymentToken?: string;
   pythPriceFeedAddress?: string;
-  pythPriceFeedProviderDecimals?: number;
+  pythPriceFeedAgeTimestamp?: number;
+  pythPriceFeedProvderIsAtomic?: boolean;
   tokens?: {
     [tokenSymbol: string]: TokenOracleConfig;
   };
@@ -88,8 +89,9 @@ const networkOracleConfigs: { [network: string]: NetworkOracleConfig } = {
     minOracleSigners: 1,
     dataStreamFeedVerifier: "0xEd813D895457907399E41D36Ec0bE103E32148c8",
     chainlinkPaymentToken: "0x76f257B1DDA5cC71bee4eF637Fbdde4C801310A9",
-    pythPriceFeedProviderDecimals: 18,
     pythPriceFeedAddress: "0x2880aB155794e7179c9eE2e38200202908C17B43",
+    pythPriceFeedAgeTimestamp: 10, // @ghoulouis age timestamp for pyth price feed, if price is not updated within this time, it will be reverted
+    pythPriceFeedProvderIsAtomic: true, // @ghoulouis set to enable atomic actions
   },
 
   arbitrum: {
@@ -133,9 +135,9 @@ type JsonTokenConfig = {
   oracle?: JsonOracleConfig;
 };
 
-function extractTokenOracleConfigs(
-  networkTokens: { [key: string]: JsonTokenConfig }
-): { [tokenSymbol: string]: TokenOracleConfig } {
+function extractTokenOracleConfigs(networkTokens: { [key: string]: JsonTokenConfig }): {
+  [tokenSymbol: string]: TokenOracleConfig;
+} {
   const result: { [tokenSymbol: string]: TokenOracleConfig } = {};
 
   for (const [symbol, token] of Object.entries(networkTokens)) {
@@ -207,7 +209,8 @@ export default async function (hre: HardhatRuntimeEnvironment): Promise<OracleCo
     dataStreamFeedVerifier: networkConfig.dataStreamFeedVerifier,
     chainlinkPaymentToken: networkConfig.chainlinkPaymentToken,
     pythPriceFeedAddress: networkConfig.pythPriceFeedAddress,
-    pythPriceFeedProviderDecimals: networkConfig.pythPriceFeedProviderDecimals,
+    pythPriceFeedAgeTimestamp: networkConfig.pythPriceFeedAgeTimestamp,
+    pythPriceFeedProvderIsAtomic: networkConfig.pythPriceFeedProvderIsAtomic,
     tokens: tokenOracleConfigs,
   };
 

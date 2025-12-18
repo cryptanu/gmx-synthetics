@@ -186,6 +186,7 @@ export function getCompactedOracleTimestamps(timestamps) {
   });
 }
 
+// @todo review oracle signing
 export async function getOracleParamsForSimulation({ tokens, minPrices, maxPrices, precisions, oracleTimestamps }) {
   if (tokens.length !== minPrices.length) {
     throw new Error(`Invalid input, tokens.length != minPrices.length ${tokens}, ${minPrices}`);
@@ -230,6 +231,7 @@ export async function getOracleParamsForSimulation({ tokens, minPrices, maxPrice
   };
 }
 
+//@todo review oracle signing
 export async function getOracleParams({
   oracleSalt,
   minOracleBlockNumbers,
@@ -246,9 +248,11 @@ export async function getOracleParams({
   dataStreamTokens,
   dataStreamData,
   priceFeedTokens,
+  pythPriceFeedTokens,
 }) {
   const signerInfo = getSignerInfo(signerIndexes);
 
+  //@todo add pyth provider here
   const dataStore = await hre.ethers.getContract("DataStore");
   const gmOracleProvider = await hre.ethers.getContract("GmOracleProvider");
   const chainlinkPriceFeedProvider = await hre.ethers.getContract("ChainlinkPriceFeedProvider");

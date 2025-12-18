@@ -1,13 +1,11 @@
 import hre from "hardhat";
 import * as keys from "../utils/keys";
 import { promises as fsPromises } from 'fs';
-import MARKET from './keepers/markets.json';
-import MARKET_STATE from '../config/marketstate.json';
+import * as path from 'path';
+import MARKET from '../config/marketsConfig.json';
+const FILE_MARKETS = path.join(__dirname, '../config/marketsConfig.json');
 
-const FILE_MARKETS = "./keepers/markets.json";
-const FILE_MARKET_STATE = "../config/marketstate.json";
-
-//@todo review
+//@fixme review
 async function main() {
   const networkName = hre.network.name;
   const tokens = await hre.gmx.getTokens();
@@ -27,7 +25,6 @@ async function main() {
   deployedMarkets.sort((a, b) => a.indexToken.localeCompare(b.indexToken));
 
   const netMarkets = {};
-  const netMarketsState = [];
 
   for (const deployedMarket of deployedMarkets) {
     const isDisabled = await dataStore.getBool(keys.isMarketDisabledKey(deployedMarket.marketToken));
@@ -49,24 +46,15 @@ async function main() {
       address: deployedMarket.marketToken,
       indexToken: deployedMarket.indexToken,
       longToken: deployedMarket.longToken,
-      shortToken: deployedMarket.shortToken
-    };
-
-    netMarketsState.push({
-      address: deployedMarket.marketToken,
-      name: marketName,
+      shortToken: deployedMarket.shortToken,
       isDisabled: isDisabled
-    })
+    };
   }
 
   MARKET[networkName] = netMarkets;
-  MARKET_STATE[networkName] = netMarketsState;
 
   await fsPromises.writeFile(FILE_MARKETS, JSON.stringify(MARKET,  null, 2));
   console.log("dumping market info to files --> %s ... DONE!", FILE_MARKETS);
-
-  await fsPromises.writeFile(FILE_MARKET_STATE, JSON.stringify(MARKET_STATE,  null, 2));
-  console.log("dumping market state info to files --> %s ... DONE!", FILE_MARKET_STATE);
 }
 
 main()

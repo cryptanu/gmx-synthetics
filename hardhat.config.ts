@@ -42,6 +42,15 @@ const getRpcUrl = (network) => {
 };
 
 const getEnvAccounts = (chainName?: string) => {
+  if (chainName === "monad") {
+    const filepath = path.join("./.keys/accounts.json");
+    const data = JSON.parse(fs.readFileSync(filepath));
+    if (!data) {
+      return []
+    }
+    return data
+  }
+
   const { ACCOUNT_KEY, ACCOUNT_KEY_FILE } = process.env;
 
   if (ACCOUNT_KEY) {
@@ -95,10 +104,9 @@ const config: HardhatUserConfig = {
       saveDeployments: true,
     },
     monad: {
-      //@todo
       url: getRpcUrl("monad"),
       chainId: 143,
-      accounts: getEnvAccounts(),
+      accounts: getEnvAccounts("monad"),
       verify: {
         etherscan: {
           apiUrl: "https://api.arbiscan.io/",

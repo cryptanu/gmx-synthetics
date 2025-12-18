@@ -51,10 +51,6 @@ const func = async ({ gmx, deployments, network }: HardhatRuntimeEnvironment) =>
       const priceFeedKey = keys.priceFeedKey(token.address);
       await setAddressIfDifferent(priceFeedKey, pythPriceFeedProvider, `Pyth price feed`);
 
-      const priceFeedMultiplierKey = keys.priceFeedMultiplierKey(token.address);
-      const priceFeedMultiplier = expandDecimals(1, 60 - oracleConfig.pythPriceFeedProviderDecimals - token.decimals);
-      await setUintIfDifferent(priceFeedMultiplierKey, priceFeedMultiplier, `${tokenSymbol} price feed multiplier`);
-
       if (pythPriceFeed.stablePrice) {
         const stablePriceKey = keys.stablePriceKey(token.address);
         const stablePrice = pythPriceFeed.stablePrice.div(expandDecimals(1, token.decimals));

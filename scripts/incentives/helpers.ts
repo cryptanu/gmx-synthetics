@@ -17,7 +17,6 @@ for (const address of Object.keys(receiverOverridesMap)) {
 }
 
 function getSubgraphEndpoint() {
-  //@todo
   if (hre.network.name === "monad") {
     return "https://mainnet-subgraph.bean.exchange/subgraphs/name/bean-synthetics";
   } else if (hre.network.name === "arbitrum") {
@@ -30,7 +29,6 @@ function getSubgraphEndpoint() {
 }
 
 function getApiEndpoint() {
-  //@todo
   if (hre.network.name === "monad") {
     return "https://mainnet-price-int.bean.exchange/";
   } else if (hre.network.name === "arbitrum") {
@@ -108,7 +106,6 @@ export async function requestSubgraph(query: string) {
 
 export function guessBlockNumberByTimestamp(block: ethers.providers.Block, timestamp: number) {
   let blocksPerSecond: number;
-  //@todo
   if (hre.network.name === "monad") {
     blocksPerSecond = 4;
   } else if (hre.network.name === "arbitrum") {
